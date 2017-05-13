@@ -1,0 +1,43 @@
+{% load static %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<div class="col-sm-6 col-sm-offset-3 panel panel-danger" style="margin-top:50px;">
+    <div class="col-sm-12" style="margin-bottom: 10px; margin-top: 10px;">
+        <div class="col-sm-2" style="padding-left: 0px;">
+            <img class="thumbnail col-sm-12" src="{% static 'img/logo.png' %}">
+        </div>
+        <div class="col-sm-10">
+            <h1 class="text-info">Install Good Weather App</h1>
+        </div>
+    </div>
+
+    <form method="POST" action=".">{% csrf_token %}
+    <div class="col-sm-12">
+        <label for="shop" class="text-info">Your Shop URL</label>
+    </div>
+    <div class="col-sm-12" style="margin-bottom: 10px;">
+        <div class="col-sm-9" style="padding-left:0px;">
+            <input class="form form-control" id="shop" name="shop" type="text" />
+        </div>
+        <div class="col-sm-3">
+            <input class="btn btn-primary" type="submit" value="Install" />
+        </div>
+    </div> 
+    </form>
+
+    <div class="col-sm-12" style="margin-bottom: 20px;">
+        <label class="text-info">Introduction</label>
+        <p class="text-info">
+            Hi <br><br>
+            This app is developed by Assassin for Andrew.<br>
+            This is needed for our shopify E-commerce site owners and managers.<br>
+            The goal is user to view the recent orders and weather status recently using Yahoo weather API, and then notice the expectation of future.<br>
+            <br>
+        </p>
+        <p class="text-success text-center">
+            Andrew & Assassin<br>
+            &copy; All rights reserved
+        </p>
+    </div>
+
+</div>

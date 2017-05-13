@@ -1,0 +1,5 @@
+Django==1.9
+python-dotenv==0.1.0
+beautifulsoup4
+ShopifyAPI
+django-shopify-auth

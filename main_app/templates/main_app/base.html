@@ -1,0 +1,31 @@
+<!DOCTYPE html>{% load staticfiles %}
+<html>
+<head>
+    <script type="text/javascript" src="https://cdn.shopify.com/s/assets/external/app.js"></script>
+    <script type="text/javascript">
+        ShopifyApp.init({
+            apiKey: '{{ SHOPIFY_APP_API_KEY }}',
+            shopOrigin: 'https://{{ user.myshopify_domain }}'
+        });
+        ShopifyApp.ready(function() {
+            ShopifyApp.Bar.initialize({
+                icon: '{% static "img/logo.png" %}',
+                title: '',
+                buttons: {
+                    primary: {
+                        label: "Customize", href: "#", target: "app" },
+                    
+                }
+            });
+
+        });
+    </script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+</head>
+<body>
+    
+        {% block body %}{% endblock %}
+
+</body>
+</html>
