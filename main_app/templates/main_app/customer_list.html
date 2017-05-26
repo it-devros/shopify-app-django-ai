@@ -1,0 +1,122 @@
+{% extends "main_app/index.html" %}
+{% load static %}
+{% block content %}
+
+<script type="text/javascript">
+ShopifyApp.ready(function() {
+    ShopifyApp.Bar.initialize({
+        icon: '{% static "img/logo.png" %}',
+        title: 'Customers List {{ day }}',
+        buttons: {
+            secondary: [
+                { label: "Home", href: "{% url 'home' %}", target: "app" }
+            ],
+        }
+    });
+
+});
+</script>
+
+
+<main>
+<section class="m-section">
+	<article>
+		<div class="column one-third">
+			<h2 class="heading1">Customers List for {{ day }}</h2> <br/> 
+			<h2 class="heading1">Total Count : {{ count_number }}</h2>
+		  </div>
+	</article>
+</section>
+
+<section class="m-section">
+	<article>
+		<div class="column two-thirds">
+			<a href="{% static 'csv/' %}{{ csv_name }}" download>Download a CSV list of customers for {{ day }} to reach <br> before sun does.</a>
+		</div>
+	</article>
+</section>
+
+<section class="m-section">
+	<article>
+		<div class="column twelve">
+			<form method="POST">{% csrf_token %}
+				<input name="search_key" type="search" placeholder="city, province, email" />
+				<input name="day" type="hidden" value="{{ day }}" />
+			</form>
+		</div>
+	</article>
+</section>
+{% if search_key != '' %}
+<section class="m-section">
+	<article>
+		<div class="column twelve">
+			<h2 class="heading1">Searching Result of key : {{ search_key }}</h2> <br/> 
+		</div>
+	</article>
+</section>
+{% endif %}
+<section class="m-section">
+	<article>
+		<div class="card">
+		<table class="results">
+		  <thead>
+			<tr>
+			  <th>Name</th>
+			  <th>Address</th>
+			  <th>Location</th>
+			  <th>Email</th>
+			  {% if week_flag == 1 %}
+			  <th>counts of sun</th>
+			  {% endif %}
+			  <th class="align-right">Total Spent</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			{% if week_flag == 0 %}
+				{% for customer in customers %}
+				<tr>
+					<td>{{ customer.first_name }} {{ customer.last_name }}</td>
+					<td>{{ customer.address1 }}, {{ customer.address2 }}</td>
+					<td>{{ customer.city }}, {{ customer.province }}, {{ customer.zip_code }}, {{ customer.country }}</td>
+					<td>{{ customer.email }}</td>
+					<td class="align-right">${{ customer.total_spent }}</td>
+				</tr>
+				{% empty %}
+				<tr><td colspan="5"><label>No data</label></td></tr>
+				{% endfor %}
+			{% endif %}
+			{% if week_flag == 1 %}
+				{% for customer in week_customers %}
+				<tr>
+					<td>{{ customer.0.first_name }} {{ customer.0.last_name }}</td>
+					<td>{{ customer.0.address1 }}, {{ customer.0.address2 }}</td>
+					<td>{{ customer.0.city }}, {{ customer.0.province }}, {{ customer.0.zip_code }}, {{ customer.0.country }}</td>
+					<td>{{ customer.0.email }}</td>
+					<td>{{ customer.1 }}</td>
+					<td class="align-right">${{ customer.0.total_spent }}</td>
+				</tr>
+				{% empty %}
+				<tr><td colspan="6"><label>No data</label></td></tr>
+				{% endfor %}
+			{% endif %}
+		  </tbody>
+		</table>
+		
+		</div>
+	</article>
+
+</section>
+<!-- 
+<section class="m-section">
+	<article>
+		<div class="pagination">
+		  <span class="button-group">
+			<button class="secondary icon-prev"></button>
+			<button class="secondary icon-next"></button>
+		  </span>
+		</div>
+	</article>
+</section> -->
+
+</main>
+{% endblock %}

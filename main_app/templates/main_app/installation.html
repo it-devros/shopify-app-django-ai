@@ -1,7 +1,74 @@
 {% extends "main_app/index.html" %}
 {% load static %}
 {% block content %}
+<main>
+<section class="m-section">
+	<article>
+		<div class="column one-third">
+		    <h2 class="heading1">Good morning, Jess <br> It looks like lovely <br> weather today.</h2>
+		  </div>
+	</article>
+</section>
+<section class="m-section">
+	<article>
+		<div class="column two-thirds">
+			<a href="{% static 'csv/' %}{{ csv_name }}" download>Download a CSV list of customers to reach <br> before sun does.</a>
+		</div>
+	</article>
+</section>
+<section class="m-section">
+	<article>
+		<div class="column one-third">
+		    <h3 class="heading1">Today's forecast:</h3>
+		  </div>
+	</article>
+</section>
+<section class="full-width m-section">
+	<article>
+		<div class="card">
+			{{ today_number }} customers expecting the sun today. &nbsp;&nbsp;&nbsp;
+			<a href="{% url 'show_list' 'today' %}"><i class="icon-next lg"></i></a>
+			<!-- <i class="icon-addcircle"></i> -->
+			<img class="add_icon" src="{% static 'img/add.png' %}">
+		</div>
+	</article>
+</section>
+<section class="m-section">
+	<article>
+		<div class="column one-third">
+		    <h3 class="heading1">Tomorrow's forecast:</h3>
+		  </div>
+	</article>
+</section>
+<section class="full-width m-section">
+	<article>
+		<div class="card">
+			{{ tomorrow_number }} customers expecting the sun tomorrow.&nbsp;&nbsp;&nbsp;
+			<a href="{% url 'show_list' 'tomorrow' %}"><i class="icon-next"></i></a>
+			<!-- <i class="icon-addcircle"></i> -->
+			<img class="add_icon" src="{% static 'img/add.png' %}">
+		</div>
+	</article>
+</section>
+<section class="m-section">
+	<article>
+		<div class="column one-third">
+		    <h3 class="heading1">This week:</h3>
+		  </div>
+	</article>
+</section>
+<section class="full-width m-section">
+	<article>
+		<div class="card">
+			{{ week_number }} customers expecting the sun this week.&nbsp;&nbsp;&nbsp;
+			<a href="{% url 'show_list' 'week' %}"><i class="icon-next"></i></a>
+			<!-- <i class="icon-addcircle"></i> -->
+			<img class="add_icon" src="{% static 'img/add.png' %}">
+		</div>
+	</article>
+</section>
+</main>
 
-<h1> Good Weather App Installed Successfully.</h1>
-
+{{ customers }}
 {% endblock %}
+
