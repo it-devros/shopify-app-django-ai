@@ -1,9 +1,9 @@
 .bg-yellow {
-	background-color: #f8ce6c !important;
+	background-color: #b4e0fa !important;
 }
 
 .bg-blue {
-	background-color: #48c0bf;
+	background-color: #b4e0fa;
 }
 
 .bg-white {
@@ -14,19 +14,40 @@
 	padding-top: 20px !important;
 	float: left !important;
 	margin: 0px !important;
-	color: white !important;
+	color: #174d7c !important;
+}
+
+.m-content {
+	padding-top: 5px !important;
+	border-top: 0px !important;
 }
 
 .m-section {
 	border-top: 0px !important;
 }
 
-.add_icon {
-	float: right;
-	margin-right: 50px;
+.weather_icon {
+	float: left;
+	margin-right: 20px;
+	margin-left: 10px;
+	margin-top: 5px;
 	width: 50px;
 	height: 50px;
 	position: absolute;
-	right: 0;
-	margin-top: 15px;
+}
+
+.label1 {
+	color: #50758c !important;
+	padding-left: 50px;
+}
+
+.label2 {
+	color: #50758c !important;
+}
+
+.icon-mine {
+	position: absolute !important;
+	margin-top: 2px !important;
+	float: right !important;
+	margin-right: 50px !important;
 }

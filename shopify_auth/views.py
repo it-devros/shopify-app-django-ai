@@ -6,7 +6,9 @@ from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, resolve_url
 from .decorators import anonymous_required
-
+from main_app.models import AuthShop
+from django.db.models import Q
+import pdb
 
 def get_return_address(request):
     return request.GET.get(auth.REDIRECT_FIELD_NAME) or resolve_url(settings.LOGIN_REDIRECT_URL)
@@ -17,9 +19,10 @@ def login(request, *args, **kwargs):
     # The `shop` parameter may be passed either directly in query parameters, or
     # as a result of submitting the login form.
     shop = request.POST.get('shop', request.GET.get('shop'))
-    
+    print '++++++++++++++++++++ it is login ++++++++++++++++++'
     # If the shop parameter has already been provided, attempt to authenticate immediately.
     if shop:
+        print '++++++++++++++++ authenticate +++++++++++++++++'
         return authenticate(request, *args, **kwargs)
 
     return render(request, "shopify_auth/login.html", {
@@ -30,9 +33,6 @@ def login(request, *args, **kwargs):
 #@anonymous_required
 def authenticate(request, *args, **kwargs):
     shop = request.POST.get('shop')
-    print(shop)
-    if settings.SHOPIFY_APP_DEV_MODE:
-        return finalize(request, token='00000000000000000000000000000000', *args, **kwargs)
 
     if shop:
         from shopify_auth import views as shopify_auth_views
@@ -53,6 +53,10 @@ def authenticate(request, *args, **kwargs):
         else:
             # Non-Embedded Apps should use a standard redirect.
             return HttpResponseRedirect(permission_url)
+    else:
+        shop = request.GET.get('shop')
+        if shop:
+            return finalize(request, *args, **kwargs)
 
     return_address = get_return_address(request)
     return HttpResponseRedirect(return_address)
@@ -61,11 +65,22 @@ def authenticate(request, *args, **kwargs):
 #@anonymous_required
 def finalize(request, *args, **kwargs):
     shop = request.GET.get('shop')
-
+    shopify_session = {}
     try:
-        shopify_session = shopify.Session(shop, token=kwargs.get('token'))
-        shopify_session.request_token(request.GET)
+        current_shops = AuthShop.objects.filter(Q(shop_name=shop) | Q(token=kwargs.get('token'))).order_by('-id')
+        if not current_shops:
+            print '++++++++++++++++++ creating shop and access token ++++++++++++++++++'
+            shopify_session = shopify.Session(shop, token=kwargs.get('token'))
+            shopify_session.request_token(request.GET)
+            print shopify_session.url
+            current_shop = AuthShop(shop_name=shopify_session.url, token=shopify_session.token)
+            current_shop.save()
+        else:
+            print '++++++++++++++++++ reloading shop and access token ++++++++++++++++++'
+            print current_shops[0].shop_name
+            shopify_session = shopify.Session(current_shops[0].shop_name, token=current_shops[0].token)
     except:
+        print '++++++++++++++++++ authentication error ++++++++++++++++++'
         login_url = reverse('shopify_auth.views.login')
         return HttpResponseRedirect(login_url)
 

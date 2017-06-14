@@ -22,6 +22,7 @@ ShopifyApp.ready(function() {
 <section class="m-section">
 	<article>
 		<div class="column one-third">
+			<img class="weather_icon" src="{% static 'img/' %}{{ weather }}.png" style="margin-top: 15px;">
 			<h2 class="heading1">Customers List for {{ day }}</h2> <br/> 
 			<h2 class="heading1">Total Count : {{ count_number }}</h2>
 		  </div>
@@ -65,14 +66,10 @@ ShopifyApp.ready(function() {
 			  <th>Address</th>
 			  <th>Location</th>
 			  <th>Email</th>
-			  {% if week_flag == 1 %}
-			  <th>counts of sun</th>
-			  {% endif %}
 			  <th class="align-right">Total Spent</th>
 			</tr>
 		  </thead>
 		  <tbody>
-			{% if week_flag == 0 %}
 				{% for customer in customers %}
 				<tr>
 					<td>{{ customer.first_name }} {{ customer.last_name }}</td>
@@ -84,21 +81,6 @@ ShopifyApp.ready(function() {
 				{% empty %}
 				<tr><td colspan="5"><label>No data</label></td></tr>
 				{% endfor %}
-			{% endif %}
-			{% if week_flag == 1 %}
-				{% for customer in week_customers %}
-				<tr>
-					<td>{{ customer.0.first_name }} {{ customer.0.last_name }}</td>
-					<td>{{ customer.0.address1 }}, {{ customer.0.address2 }}</td>
-					<td>{{ customer.0.city }}, {{ customer.0.province }}, {{ customer.0.zip_code }}, {{ customer.0.country }}</td>
-					<td>{{ customer.0.email }}</td>
-					<td>{{ customer.1 }}</td>
-					<td class="align-right">${{ customer.0.total_spent }}</td>
-				</tr>
-				{% empty %}
-				<tr><td colspan="6"><label>No data</label></td></tr>
-				{% endfor %}
-			{% endif %}
 		  </tbody>
 		</table>
 		

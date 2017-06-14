@@ -28,6 +28,9 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
+        'OPTIONS': {
+            'timeout': 20,
+        }
     }
 }
 
@@ -82,7 +85,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-     os.path.join(PROJECT_PATH,'GoodWeather/static/'), 
+     os.path.join(PROJECT_PATH,'main_app/static'), 
 )
 
 # List of finder classes that know how to find static files in

@@ -3,117 +3,127 @@ from django.views.decorators.csrf import csrf_exempt
 from shopify_auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpRequest
 from django.core.mail import EmailMessage
 from django.db.models import Q
 from django.utils.crypto import get_random_string
-from models import AuthAppShopUser, Customer, Weather, Order
+from models import AuthAppShopUser, AuthShop, Customer, Weather, Order, Countnumber
 from GoodWeather import settings
 from shopify_webhook.decorators import webhook
 import shopify
-import json
-import csv
-import yweather
 
+
+@csrf_exempt
+@webhook
+def uninstall_webhook_callback(request):
+	print '++++++++++++++++++ deleting webhook ++++++++++++++++++'
+	webhook_data = request.webhook_data
+	print webhook_data['domain']
+	print request.webhook_domain
+	try:
+		user = AuthAppShopUser.objects.filter(myshopify_domain=request.webhook_domain).order_by('-id')[0]
+		user.delete()
+	except:
+		pass
+	try:
+		current_shop = AuthShop.objects.filter(shop_name=request.webhook_domain).order_by('-id')[0]
+		current_shop.delete()
+	except:
+		pass
+	print('webhook ok')
+	return HttpResponse('ok')
 
 @login_required
 def home(request, *args, **kwargs):
-	# getting the shop name and deleting the old customers' data
+	print '++++++++++++++++++ activating webhook ++++++++++++++++++'
+	webhook_shop_address = 'https://9731e621.ngrok.io' + '/app/uninstall_webhook_callback/'
+	with request.user.session:
+		webhook_status = 0
+		webhook_shops = shopify.Webhook.find()
+		if webhook_shops:
+			for webhook_shop in webhook_shops:
+				if webhook_shop.address == webhook_shop_address:
+					webhook_status = 1
+		if webhook_status == 0:
+			print '++++++++++++++++++ saving webhook ++++++++++++++++++'
+			webhook_shop = shopify.Webhook()
+			webhook_shop.topic = 'app/uninstalled'
+			webhook_shop.address = webhook_shop_address
+			webhook_shop.format = 'json'
+			webhook_shop.save()
+	print '++++++++++++++++++++++++++ shopify store information ++++++++++++++++++++'
+	shop_name = request.user.myshopify_domain
+	print shop_name
 	shop_id = ''
 	with request.user.session:
 		shop = shopify.Shop.current()
 		shop_id = str(shop.id)
-	Customer.objects.filter(shop_name=shop_id).delete()
-	Orders.objects.filter(shop_name=shop_id).delete()
-	#  getting the customers'data from shopify API and saving in database.
-	with request.user.session:
-		customers = shopify.Customer.find()
-		for customer in customers:
-			for addr in customer.addresses:
-				record = Customer(shop_name=shop_id, address1=addr.address1, address2=addr.address2, city=addr.city, country=addr.country, first_name=addr.first_name, addr_id=addr.id, last_name=addr.last_name, phone=addr.phone, province=addr.province, zip_code=addr.zip, province_code=addr.province_code, country_code=addr.country_code, email=customer.email, total_spent=customer.total_spent, created_at=customer.created_at, updated_at=customer.updated_at)
-				record.save()
+	print shop_id
+	try:
+		current_shop = AuthShop.objects.filter(shop_name=shop_name)[0]
+		current_shop.shop_id = shop_id
+		current_shop.save()
+	except:
+		print '++++++++++++++++++ current shop id error ++++++++++++++++++'
+		pass
+	try:
+		current_info = Countnumber.objects.filter(shop_name=shop_name).order_by('-id')[0]
+		sun_today_number = current_info.sun_today
+		rain_today_number = current_info.rain_today
+		wind_today_number = current_info.wind_today
+		snow_today_number = current_info.snow_today
+		sun_tomorrow_number = current_info.sun_tomorrow
+		rain_tomorrow_number = current_info.rain_tomorrow
+		wind_tomorrow_number = current_info.wind_tomorrow
+		snow_tomorrow_number = current_info.snow_tomorrow
+		sun_week_number = current_info.sun_week
+		rain_week_number = current_info.rain_week
+		wind_week_number = current_info.wind_week
+		snow_week_number = current_info.snow_week
+	except:
+		sun_today_number = '0'
+		rain_today_number = '0'
+		wind_today_number = '0'
+		snow_today_number = '0'
+		sun_tomorrow_number = '0'
+		rain_tomorrow_number = '0'
+		wind_tomorrow_number = '0'
+		snow_tomorrow_number = '0'
+		sun_week_number = '0'
+		rain_week_number = '0'
+		wind_week_number = '0'
+		snow_week_number = '0'
 
-		orders = shopify.Order.find()
-		length = len(orders)
-		if length < 250:
-			i = 0
-		else:
-			i = length - 250
-		while i < length:
-			items = ''
-			for item in orders[i].line_items:
-				items += item.name + ', '
-			if not orders[i].shipping_address:
-				for addr in orders[i].shipping_address:
-					record = Order(shop_name=shop_id, oid=orders[i].id, name=orders[i].name, number=orders[i].order_number, city=addr.city, province=addr.province, country=addr.country, items=items[:-2])
-					record.save()
-			else:
-				record = Order(shop_name=shop_id, oid=orders[i].id, name=orders[i].name, number=orders[i].order_number, items=items[:-2])
-				record.save()
-			i += 1
-
-	# getting the customers for each shop and making csv and exporting
-	customers = Customer.objects.filter(shop_name=shop_id)
-	csv_url = settings.PROJECT_PATH + '/main_app' + settings.STATIC_URL + 'csv/' + shop_id + '.csv'
-	city_list = []
-	with open(csv_url, 'wb') as f:
-		writer = csv.writer(f)
-		writer.writerow(['shop_name', 'address1', 'address2', 'city', 'country', 'first_name', 'addr_id', 'last_name', 'phone', 'province', 'zip_code', 'province_code', 'country_code', 'email', 'total_spent', 'created_at', 'updated_at', 'saved_at'])
-		for customer in customers:
-			writer.writerow(get_list(customer))
-			if customer.country_code == 'US':
-				if not [customer.city, customer.province] in city_list:
-					city_list.append([customer.city, customer.province])
-			else:
-				if not [customer.city, customer.country] in city_list:
-					city_list.append([customer.city, customer.country])
 	csv_name = shop_id + '.csv'
-	
-	# getting the weather information and saving in database with updating old data.
-
-	# getting the number of customers for each duration(today, tomorrow, week)
-	today_number = 0
-	tomorrow_number = 0
-	week_number = 0
-	for customer in customers:
-		city = customer.city
-		city_s = ''
-		if customer.country_code == 'US':
-			city_s = customer.province
-		else:
-			city_s = customer.country
-		try:
-			weather_list = Weather.objects.filter(Q(city=city)&Q(city_sec=city_s))
-			weather = weather_list[0]
-			if weather.today_condition == 'sun':
-				today_number += 1
-			if weather.tomorrow_condition == 'sun':
-				tomorrow_number += 1
-			week_list = weather.week_condition.split(',')
-			i = 0
-			for we in week_list:
-				we = we.strip()
-				if we.find('sun') != -1:
-					i += 1
-			week_number += i
-		except:
-			print '++++++++++++++++++ an error occupied'
 
 	return render(request, "main_app/installation.html", 
 		{
 			'csv_name': csv_name,
-			'today_number': today_number,
-			'tomorrow_number': tomorrow_number,
-			'week_number': week_number
+			'sun_today_number': sun_today_number,
+			'rain_today_number': rain_today_number,
+			'wind_today_number': wind_today_number,
+			'snow_today_number': snow_today_number,
+			'sun_tomorrow_number': sun_tomorrow_number,
+			'rain_tomorrow_number': rain_tomorrow_number,
+			'wind_tomorrow_number': wind_tomorrow_number,
+			'snow_tomorrow_number': snow_tomorrow_number,
+			'sun_week_number': sun_week_number,
+			'rain_week_number': rain_week_number,
+			'wind_week_number': wind_week_number,
+			'snow_week_number': snow_week_number,
 		})
 
 @login_required
-def show_list(request, day, *args, **kwargs):
+def show_list(request, day, weather, *args, **kwargs):
+	#  getting the shop id from session
+	print '++++++++++++++++++++++ shopify store inforamtion ++++++++++++++++++'
+	shop_name = request.user.myshopify_domain
+	print shop_name
 	shop_id = ''
 	with request.user.session:
 		shop = shopify.Shop.current()
 		shop_id = str(shop.id)
-
+	print shop_id
 	search_key = ''
 	if request.method == 'POST':
 		search_key = request.POST.get('search_key')
@@ -121,85 +131,31 @@ def show_list(request, day, *args, **kwargs):
 
 	count_number = 0
 	result = []
-	week_result = []
-	week_flag = 0
+	query = Q()
+	if day == 'today':
+		if search_key == '':
+			query = Q(shop_name=shop_name)&Q(today__contains=weather)
+		else:
+			query = (Q(shop_name=shop_name)&Q(today__contains=weather))|Q(city__contains=search_key)|Q(province__contains=search_key)|Q(country__contains=search_key)
+	if day == 'tomorrow':
+		if search_key == '':
+			query = Q(shop_name=shop_name)&Q(tomorrow__contains=weather)
+		else:
+			query = (Q(shop_name=shop_name)&Q(tomorrow__contains=weather))|Q(city__contains=search_key)|Q(province__contains=search_key)|Q(country__contains=search_key)
 	if day == 'week':
-		week_flag = 1
-
-	csv_url = settings.PROJECT_PATH + '/main_app' + settings.STATIC_URL + 'csv/' + shop_id + '-' + day + '.csv'
-
-	customers = Customer.objects.filter(shop_name=shop_id)
-	with open(csv_url, 'wb') as f:
-		writer = csv.writer(f)
-		writer.writerow(['shop_name', 'address1', 'address2', 'city', 'country', 'first_name', 'addr_id', 'last_name', 'phone', 'province', 'zip_code', 'province_code', 'country_code', 'email', 'total_spent', 'created_at', 'updated_at', 'saved_at'])
-		for customer in customers:
-			city = customer.city
-			city_s = ''
-			if customer.country_code == 'US':
-				city_s = customer.province
-			else:
-				city_s = customer.country
-			try:
-				weather_list = Weather.objects.filter(Q(city=city)&Q(city_sec=city_s))
-				weather = weather_list[0]
-				if day == 'today':
-					if weather.today_condition == 'sun':
-						if search_key != '':
-							count_number += 1
-							if customer.city.find(search_key) != -1 or customer.province.find(search_key) != -1 or customer.country.find(search_key) != -1 or customer.email.find(search_key) != -1:
-								result.append(customer)
-						else:
-							count_number += 1
-							result.append(customer)
-						writer.writerow(get_list(customer))
-				if day == 'tomorrow':
-					if weather.tomorrow_condition == 'sun':
-						if search_key != '':
-							count_number += 1
-							if customer.city.find(search_key) != -1 or customer.province.find(search_key) != -1 or customer.country.find(search_key) != -1 or customer.email.find(search_key) != -1:
-								result.append(customer)
-						else:
-							count_number += 1
-							result.append(customer)
-						writer.writerow(get_list(customer))
-				if day == 'week':
-					if weather.week_condition.find('sun') != -1:
-						if search_key != '':
-							if customer.city.find(search_key) != -1 or customer.province.find(search_key) != -1 or customer.country.find(search_key) != -1 or customer.email.find(search_key) != -1:
-								count_number += 1
-								week_list = weather.week_condition.split(',')
-								i = 0
-								for we in week_list:
-									we = we.strip()
-									if we.find('sun') != -1:
-										i += 1
-								print i
-								week_result.append([customer, i])
-						else:
-							count_number += 1
-							week_list = weather.week_condition.split(',')
-							i = 0
-							for we in week_list:
-								we = we.strip()
-								if we.find('sun') != -1:
-									i += 1
-							print i
-							week_result.append([customer, i])
-						writer.writerow(get_list(customer))
-			except:
-				print '++++++++++++++++++ an error occupied'
-
+		if search_key == '':
+			query = Q(shop_name=shop_name)&Q(week__contains=weather)
+		else:
+			query = (Q(shop_name=shop_name)&Q(week__contains=weather))|Q(city__contains=search_key)|Q(province__contains=search_key)|Q(country__contains=search_key)
+	result = Customer.objects.filter(query)
+	count_number = result.count()
+	# return the values to template.
 	return render(request, "main_app/customer_list.html", 
 		{
 			'day': day,
+			'weather': weather,
 			'count_number': count_number,
-			'week_flag': week_flag,
 			'customers': result,
-			'week_customers': week_result,
-			'csv_name': shop_id + '-' + day + '.csv',
+			'csv_name': shop_id + '-' + day + '-' + weather + '.csv',
 			'search_key': search_key
 		})
-
-
-def get_list(customer):
-	return [customer.shop_name, customer.address1, customer.address2, customer.city, customer.country, customer.first_name, customer.addr_id, customer.last_name, customer.phone, customer.province, customer.zip_code, customer.province_code, customer.country_code, customer.email, customer.total_spent, customer.created_at, customer.updated_at, customer.saved_at]

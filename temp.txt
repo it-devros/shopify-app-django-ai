@@ -1,0 +1,29 @@
+
+    print(shop)
+    if settings.SHOPIFY_APP_DEV_MODE:
+        return finalize(request, token='00000000000000000000000000000000', *args, **kwargs)
+
+
+
+shopify_auth / views.py
+
+main_app / models.py
+
+main_app / urls.py
+main_app / views.py
+
+
+for views
+webhook_shop_address = 'https://goodweatherapp.herokuapp.com' + '/app/uninstall_webhook_callback/'
+for bot
+csv_url = settings.STATIC_ROOT + '/csv/' + shop_id + '.csv'
+csv_url = settings.STATIC_ROOT + '/csv/' + shop_id + '-' + day + '.csv'
+
+
+main_app / Views.py, urls.py, models.py
+installation.html
+customer_list.html
+shopify_auth / views.py
+static
+migrations
+andrewbot.py
