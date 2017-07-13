@@ -1,5 +1,5 @@
 
-Documentation of GoodWeather App (Shopify Embedded App)
+#Documentation of GoodWeather App (Shopify Embedded App) - Local machine
 
 Preinstallation
 
