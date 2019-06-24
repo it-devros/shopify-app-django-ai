@@ -2,13 +2,13 @@ from django.dispatch import Signal
 
 
 class WebhookSignal(Signal):
-    """
-    A class wrapping Signal with the common arguments for Webhooks.
-    """
+  """
+  A class wrapping Signal with the common arguments for Webhooks.
+  """
 
-    def __init__(self):
-        providing_args = ['domain', 'topic', 'data']
-        super(WebhookSignal, self).__init__(providing_args = providing_args)
+  def __init__(self):
+    providing_args = ['domain', 'topic', 'data']
+    super(WebhookSignal, self).__init__(providing_args = providing_args)
 
 
 # Define a generic webhook_received signal that triggers for all webhooks.

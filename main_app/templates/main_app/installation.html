@@ -3,155 +3,155 @@
 {% block content %}
 <main>
 <section class="m-section">
-	<article>
-		<div class="column one-third">
-		    <h2 class="heading1">Good morning, Jess <br> It looks like lovely <br> weather today.</h2>
-		  </div>
-	</article>
+  <article>
+    <div class="column one-third">
+        <h2 class="heading1">Good morning, Jess <br> It looks like lovely <br> weather today.</h2>
+      </div>
+  </article>
 </section>
 
 <section class="m-section">
-	<article>
-		<div class="column two-thirds">
-			<a href="{% static 'csv/' %}{{ csv_name }}" class="label2" download>Download a CSV list of all customers to reach <br> before sun does.</a>
-		</div>
-	</article>
+  <article>
+    <div class="column two-thirds">
+      <a href="{% static 'csv/' %}{{ csv_name }}" class="label2" download>Download a CSV list of all customers to reach <br> before sun does.</a>
+    </div>
+  </article>
 </section>
 
 
 
 <section class="m-section">
-	<article>
-		<div class="column one-third">
-		    <h3 class="heading1">Today's forecast:</h3>
-		  </div>
-	</article>
+  <article>
+    <div class="column one-third">
+        <h3 class="heading1">Today's forecast:</h3>
+      </div>
+  </article>
 </section>
 <section class="full-width m-section">
-	<article>
-		<img class="weather_icon" src="{% static 'img/sun.png' %}">
-		<div class="card">
-			<label class="label1">{{ sun_today_number }} customers expecting the sun today.&nbsp;&nbsp;&nbsp;
-			<a href="{% url 'show_list' 'today' 'sun' %}" class="icon-mine"><i class="icon-next lg"></i></a></label>
-		</div>
-	</article>
+  <article>
+    <img class="weather_icon" src="{% static 'img/sun.png' %}">
+    <div class="card">
+      <label class="label1">{{ sun_today_number }} customers expecting the sun today.&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'show_list' 'today' 'sun' %}" class="icon-mine"><i class="icon-next lg"></i></a></label>
+    </div>
+  </article>
 </section>
 <section class="full-width m-content">
-	<article>
-		<img class="weather_icon" src="{% static 'img/rain.png' %}">
-		<div class="card">
-			<label class="label1">{{ rain_today_number }} customers expecting the rain today.&nbsp;&nbsp;&nbsp;
-			<a href="{% url 'show_list' 'today' 'rain' %}" class="icon-mine"><i class="icon-next lg"></i></a></label>
-		</div>
-	</article>
+  <article>
+    <img class="weather_icon" src="{% static 'img/rain.png' %}">
+    <div class="card">
+      <label class="label1">{{ rain_today_number }} customers expecting the rain today.&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'show_list' 'today' 'rain' %}" class="icon-mine"><i class="icon-next lg"></i></a></label>
+    </div>
+  </article>
 </section>
 <section class="full-width m-content">
-	<article>
-		<img class="weather_icon" src="{% static 'img/wind.png' %}">
-		<div class="card">
-			<label class="label1">{{ wind_today_number }} customers expecting the wind today.&nbsp;&nbsp;&nbsp;
-			<a href="{% url 'show_list' 'today' 'wind' %}" class="icon-mine"><i class="icon-next lg"></i></a></label>
-		</div>
-	</article>
+  <article>
+    <img class="weather_icon" src="{% static 'img/wind.png' %}">
+    <div class="card">
+      <label class="label1">{{ wind_today_number }} customers expecting the wind today.&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'show_list' 'today' 'wind' %}" class="icon-mine"><i class="icon-next lg"></i></a></label>
+    </div>
+  </article>
 </section>
 <section class="full-width m-content">
-	<article>
-		<img class="weather_icon" src="{% static 'img/snow.png' %}">
-		<div class="card">
-			<label class="label1">{{ snow_today_number }} customers expecting the snow today.&nbsp;&nbsp;&nbsp;
-			<a href="{% url 'show_list' 'today' 'snow' %}" class="icon-mine"><i class="icon-next lg"></i></a></label>
-		</div>
-	</article>
+  <article>
+    <img class="weather_icon" src="{% static 'img/snow.png' %}">
+    <div class="card">
+      <label class="label1">{{ snow_today_number }} customers expecting the snow today.&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'show_list' 'today' 'snow' %}" class="icon-mine"><i class="icon-next lg"></i></a></label>
+    </div>
+  </article>
 </section>
 
 
 <section class="m-section">
-	<article>
-		<div class="column one-third">
-		    <h3 class="heading1">Tomorrow's forecast:</h3>
-		  </div>
-	</article>
+  <article>
+    <div class="column one-third">
+        <h3 class="heading1">Tomorrow's forecast:</h3>
+      </div>
+  </article>
 </section>
 <section class="full-width m-section">
-	<article>
-		<img class="weather_icon" src="{% static 'img/sun.png' %}">
-		<div class="card">
-			<label class="label1">{{ sun_tomorrow_number }} customers expecting the sun tomorrow.&nbsp;&nbsp;&nbsp;
-			<a href="{% url 'show_list' 'tomorrow' 'sun' %}" class="icon-mine"><i class="icon-next"></i></a></label>
-		</div>
-	</article>
+  <article>
+    <img class="weather_icon" src="{% static 'img/sun.png' %}">
+    <div class="card">
+      <label class="label1">{{ sun_tomorrow_number }} customers expecting the sun tomorrow.&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'show_list' 'tomorrow' 'sun' %}" class="icon-mine"><i class="icon-next"></i></a></label>
+    </div>
+  </article>
 </section>
 <section class="full-width m-content">
-	<article>
-		<img class="weather_icon" src="{% static 'img/rain.png' %}">
-		<div class="card">
-			<label class="label1">{{ rain_tomorrow_number }} customers expecting the rain tomorrow.&nbsp;&nbsp;&nbsp;
-			<a href="{% url 'show_list' 'tomorrow' 'rain' %}" class="icon-mine"><i class="icon-next"></i></a></label>
-		</div>
-	</article>
+  <article>
+    <img class="weather_icon" src="{% static 'img/rain.png' %}">
+    <div class="card">
+      <label class="label1">{{ rain_tomorrow_number }} customers expecting the rain tomorrow.&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'show_list' 'tomorrow' 'rain' %}" class="icon-mine"><i class="icon-next"></i></a></label>
+    </div>
+  </article>
 </section>
 <section class="full-width m-content">
-	<article>
-		<img class="weather_icon" src="{% static 'img/wind.png' %}">
-		<div class="card">
-			<label class="label1">{{ wind_tomorrow_number }} customers expecting the wind tomorrow.&nbsp;&nbsp;&nbsp;
-			<a href="{% url 'show_list' 'tomorrow' 'wind' %}" class="icon-mine"><i class="icon-next"></i></a></label>
-		</div>
-	</article>
+  <article>
+    <img class="weather_icon" src="{% static 'img/wind.png' %}">
+    <div class="card">
+      <label class="label1">{{ wind_tomorrow_number }} customers expecting the wind tomorrow.&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'show_list' 'tomorrow' 'wind' %}" class="icon-mine"><i class="icon-next"></i></a></label>
+    </div>
+  </article>
 </section>
 <section class="full-width m-content">
-	<article>
-		<img class="weather_icon" src="{% static 'img/snow.png' %}">
-		<div class="card">
-			<label class="label1">{{ snow_tomorrow_number }} customers expecting the snow tomorrow.&nbsp;&nbsp;&nbsp;
-			<a href="{% url 'show_list' 'tomorrow' 'snow' %}" class="icon-mine"><i class="icon-next"></i></a></label>
-		</div>
-	</article>
+  <article>
+    <img class="weather_icon" src="{% static 'img/snow.png' %}">
+    <div class="card">
+      <label class="label1">{{ snow_tomorrow_number }} customers expecting the snow tomorrow.&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'show_list' 'tomorrow' 'snow' %}" class="icon-mine"><i class="icon-next"></i></a></label>
+    </div>
+  </article>
 </section>
 
 
 <section class="m-section">
-	<article>
-		<div class="column one-third">
-		    <h3 class="heading1">This week:</h3>
-		  </div>
-	</article>
+  <article>
+    <div class="column one-third">
+        <h3 class="heading1">This week:</h3>
+      </div>
+  </article>
 </section>
 <section class="full-width m-section">
-	<article>
-		<img class="weather_icon" src="{% static 'img/sun.png' %}">
-		<div class="card">
-			<label class="label1">{{ sun_week_number }} customers expecting the sun this week.&nbsp;&nbsp;&nbsp;
-			<a href="{% url 'show_list' 'week' 'sun' %}" class="icon-mine"><i class="icon-next"></i></a></label>
-		</div>
-	</article>
+  <article>
+    <img class="weather_icon" src="{% static 'img/sun.png' %}">
+    <div class="card">
+      <label class="label1">{{ sun_week_number }} customers expecting the sun this week.&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'show_list' 'week' 'sun' %}" class="icon-mine"><i class="icon-next"></i></a></label>
+    </div>
+  </article>
 </section>
 <section class="full-width m-content">
-	<article>
-		<img class="weather_icon" src="{% static 'img/rain.png' %}">
-		<div class="card">
-			<label class="label1">{{ rain_week_number }} customers expecting the rain this week.&nbsp;&nbsp;&nbsp;
-			<a href="{% url 'show_list' 'week' 'rain' %}" class="icon-mine"><i class="icon-next"></i></a></label>
-		</div>
-	</article>
+  <article>
+    <img class="weather_icon" src="{% static 'img/rain.png' %}">
+    <div class="card">
+      <label class="label1">{{ rain_week_number }} customers expecting the rain this week.&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'show_list' 'week' 'rain' %}" class="icon-mine"><i class="icon-next"></i></a></label>
+    </div>
+  </article>
 </section>
 <section class="full-width m-content">
-	<article>
-		<img class="weather_icon" src="{% static 'img/wind.png' %}">
-		<div class="card">
-			<label class="label1">{{ wind_week_number }} customers expecting the wind this week.&nbsp;&nbsp;&nbsp;
-			<a href="{% url 'show_list' 'week' 'wind' %}" class="icon-mine"><i class="icon-next"></i></a></label>
-		</div>
-	</article>
+  <article>
+    <img class="weather_icon" src="{% static 'img/wind.png' %}">
+    <div class="card">
+      <label class="label1">{{ wind_week_number }} customers expecting the wind this week.&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'show_list' 'week' 'wind' %}" class="icon-mine"><i class="icon-next"></i></a></label>
+    </div>
+  </article>
 </section>
 <section class="full-width m-content">
-	<article>
-		<img class="weather_icon" src="{% static 'img/snow.png' %}">
-		<div class="card">
-			<label class="label1">{{ snow_week_number }} customers expecting the snow this week.&nbsp;&nbsp;&nbsp;
-			<a href="{% url 'show_list' 'week' 'snow' %}" class="icon-mine"><i class="icon-next"></i></a></label>
-		</div>
-	</article>
+  <article>
+    <img class="weather_icon" src="{% static 'img/snow.png' %}">
+    <div class="card">
+      <label class="label1">{{ snow_week_number }} customers expecting the snow this week.&nbsp;&nbsp;&nbsp;
+      <a href="{% url 'show_list' 'week' 'snow' %}" class="icon-mine"><i class="icon-next"></i></a></label>
+    </div>
+  </article>
 </section>
 
 
